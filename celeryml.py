@@ -13,7 +13,13 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         query = urlparse(self.path).query
         params = re.findall(r"[\d+.\d+']+", query)
-        tasks.get_result.async(params)
+        result = tasks.get_result.delay(params)
+        info = result.get()
+        if info['error'] != '':
+            tasks.compute_model.delay().get()
+            return tasks.get_result.delay(params)
+        else:
+            return info
 
 
 server = http.server.HTTPServer(("localhost", 8080), RequestHandler)
