@@ -15,9 +15,9 @@ def compute_model():
     joblib.dump(model, '../svmmodel.pkl', compress=9)
 
 
-@app.task(serializer='json')
+@app.task()
 def get_result(data):
     if not os.path.exists('../svmmodel.pkl'):
         return {'result':'', 'error': 'File with model is not found'}
     model = joblib.load('../svmmodel.pkl')
-    return {'result': model.predict(data), 'error': ''}
+    return {'result': str(model.predict(data)[0]), 'error': ''}
