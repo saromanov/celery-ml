@@ -19,5 +19,5 @@ def compute_model():
 def get_result(data):
     if not os.path.exists('../svmmodel.pkl'):
         return {'result':'', 'error': 'File with model is not found'}
-    model = joblib('../svmmodel.pkl')
+    model = joblib.load('../svmmodel.pkl')
     return {'result': model.predict(data), 'error': ''}
