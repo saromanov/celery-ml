@@ -3,6 +3,7 @@ import http.server
 from urllib.parse import urlparse
 import re
 
+#Start to create server
 
 class RequestHandler(http.server.BaseHTTPRequestHandler):
     def _set_headers(self):
