@@ -5,6 +5,7 @@ from sklearn.datasets import load_iris
 from sklearn.ensemble import RandomForestClassifier
 import os
 import datetime
+from sklearn.grid_search import GridSearchCV
 
 app = celery.Celery("ml")
 app.config_from_object('celeryconfig')
@@ -31,6 +32,15 @@ def compute_rfmodel(params, data):
     model = RandomForestClassifier()
     model.fit(data)
     joblib.dump(model, '../{0}_{1}_rfmodel.pkl'.format(username, strtime), compress=9)
+
+@app.task
+def compute_grid_search(params, data):
+    ''' Compute neural network model
+    '''
+    model = params['model']
+    parameters = params['params']
+    clf = GridSearchCV(model, parameters, cv=5)
+    clf.fit(data[0], data[1])
 
 @app.task()
 def get_result(data):
